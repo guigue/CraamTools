@@ -1,12 +1,24 @@
 import os, sys, glob
 import numpy as np
 import datetime as dt
+import pandas as pd
 from astropy.io import fits
 from astropy.time import Time as astrotime
 
+tablename = pd.DataFrame( {'extension' : ['lis'     ,'k7o'          ,'phf'    ,'apl'      ],
+                           'station'   : ['San Vito','Sagamore-hill','Palehua','Learmonth']} )
+tablename.set_index('extension', inplace=True)
 
-def read(fname,station='San Vito',verbose=True):
+__Version__ = '2024-11-22T1700BST'
 
+def version():
+    return __Version__
+
+def read(fname,verbose=True):
+
+    extension = fname.split(sep='.')[-1]
+    station = tablename.loc[extension]['station']
+    
     d      = []
     time   = []
     mstime = []
@@ -67,9 +79,6 @@ def read(fname,station='San Vito',verbose=True):
     data.update({'t_end':atime[-1].fits})
 
     return data
-
-def getVersion():
-    return '2020-06-01T1825BRT'
 
 def writeFits(d,fitsname,*comments):
 
