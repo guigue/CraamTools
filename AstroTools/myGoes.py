@@ -1,14 +1,18 @@
 #########################################################
 #
 # myGoes : some scripts to deal with GOES data in Python
+#          returns the filenames of raw data, and a dataframe with the data
 #
 #
-# 
+# @Guiguesp - 2024-12-11T20:19BST
+
+__Version__ = '2024-12-11T20:19BST'
+
 def get(isoStart,isoEnd):
 
     # Get: uses sunpy to get goes data.
     # isoStart, isoEnd: 'YYYY-MM-DD hh:mm:ss'
-    # Returns file (object) and timeseries (object)
+    # Returns file (object) and DataFrame (object)
     
     from sunpy import timeseries as ts
     from sunpy.net import Fido
@@ -23,6 +27,6 @@ def get(isoStart,isoEnd):
         file=[]
         goes = []
 
-    return file, goes
+    return file, goes.to_dataframe()
 
 
