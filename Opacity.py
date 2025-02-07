@@ -21,6 +21,7 @@ import pdb
 #                     2022-04-14 Added Extinction Opeacity Calculation
 #
 ########################################################################
+__Version__ ='2025-02-07T13:38BST'
 
 def refraction(ele,temp=10,humi=10,pres=570):
     
@@ -122,4 +123,14 @@ def Extinction(x,y):
     
     return par,yfit,cov
 
-    
+def HATS_Opacity_Model(pwv):
+
+    ###################################
+    #
+    # Model obtained from MODTRAN simulations.
+    # See ~/IR/MODTRAN/HATS_Opacity
+    #
+    # tau_fit = [0.25134433, 0.4604438 ]
+    tau_fit = [0.73006135, 0.4404908 ]
+
+    return pwv * tau_fit[0] + tau_fit[1]
