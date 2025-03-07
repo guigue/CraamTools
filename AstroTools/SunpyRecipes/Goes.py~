@@ -1,6 +1,6 @@
 #########################################################
 #
-# myGoes : some scripts to deal with GOES data in Python
+# sunpyGoes : some scripts to deal with GOES data in Python
 #          returns the filenames of raw data, and a dataframe with the data
 #
 #

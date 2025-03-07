@@ -8,7 +8,7 @@ import pdb
 from CraamTools import vertex70 as v
 from CraamTools.fit import Gauss
 
-_Version = '2023-06-13T1255BRT'
+_Version = '2025-03-07T1432BRT'
 
 def hum_to_ppmv(humidity=20,   # %
                 temperature=10,# C
@@ -104,6 +104,18 @@ class AR30T(object):
 
         return
 
+class MIRI(object):
+
+    def __init__(self):
+        
+        self.version = _Version
+        bpf = pd.read_csv(os.getenv("HOME")+'/IR/QWIP_Response.csv')
+        self.bpf = {'Wavelength':bpf['wl'],'Wavenumber': 1E+04/bpf['wl'],
+                    'Frequency': c.c.value*1E-06/bpf['wl'],
+                    'Transmission':{'blue':bpf['chan_blue'],'red':bpf['chan_red']}}
+        
+        return
+    
 class model(object):
 
     def __init__(self,root):
@@ -121,6 +133,7 @@ class model(object):
 
         self.HATS = HATS()
         self.AR30T = AR30T()
+        self.MIRI = MIRI()
         
         return
 
@@ -146,12 +159,28 @@ class model(object):
             nu_upper = self.AR30T.bpf['Frequency'].max()
             x = (self.Data['Frequency'] >= nu_bottom) & (self.Data['Frequency'] <= nu_upper)
             bpf = np.interp(self.Data['Frequency'][x],np.flip(self.AR30T.bpf['Frequency']),np.flip(self.AR30T.bpf['Transmission']))
+
+        elif (instrument.lower() == 'miri'):
+            nu_bottom = self.MIRI.bpf['Frequency'].min()
+            nu_upper = self.MIRI.bpf['Frequency'].max()
+            x = (self.Data['Frequency'] >= nu_bottom) & (self.Data['Frequency'] <= nu_upper)
+            bpf = {}
+            bpf.update({'red':np.interp(self.Data['Frequency'][x],np.flip(self.MIRI.bpf['Frequency']),np.flip(self.MIRI.bpf['Transmission']['red']))})
+            bpf.update({'blue':np.interp(self.Data['Frequency'][x],np.flip(self.MIRI.bpf['Frequency']),np.flip(self.MIRI.bpf['Transmission']['blue']))})
             
         else:
             return
         
-        self.Transmission.update({'bpf':bpf,'Frequency':self.Data['Frequency'][x],'Value':0.0})
-        self.Transmission['Value'] = np.trapz(self.Data['Transmission'][x]*bpf,self.Data['Frequency'][x]) / np.trapz(bpf,self.Data['Frequency'][x])
+
+
+        if (instrument.lower() == 'miri'):
+            self.Transmission.update({'bpf':bpf,'Frequency':self.Data['Frequency'][x],'Value':{'red':0.0, 'blue':0.0}})
+            self.Transmission['Value']['red']  = np.trapz(self.Data['Transmission'][x]*bpf['red'],self.Data['Frequency'][x])  / np.trapz(bpf['red'],self.Data['Frequency'][x] )
+            self.Transmission['Value']['blue'] = np.trapz(self.Data['Transmission'][x]*bpf['blue'],self.Data['Frequency'][x]) / np.trapz(bpf['blue'],self.Data['Frequency'][x])
+
+        else:
+            self.Transmission.update({'bpf':bpf,'Frequency':self.Data['Frequency'][x],'Value':0.0})
+            self.Transmission['Value'] = np.trapz(self.Data['Transmission'][x]*bpf,self.Data['Frequency'][x]) / np.trapz(bpf,self.Data['Frequency'][x])
 
         return
         
