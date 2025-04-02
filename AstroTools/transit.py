@@ -9,11 +9,11 @@ import numpy as np
 
 import CASLEO
 
-__version__ = '2025-04-01T1000BRT'
+__version__ = '2025-04-02T1000BRT'
 
 def version():
 
-  print __version__
+  return __version__
 
   
 def compute(object='sun',when=Time.now(),plotfig=False,savefig=False):
