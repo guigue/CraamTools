@@ -1,0 +1,38 @@
+from astropy import units as u
+from astropy import constants as c
+
+########################################
+#
+# wavenumber
+#
+# Convert the wavenumber to wavelength and frequency
+#
+# Input: wavenumber
+# Output: [wavelength, frequency]
+# Use:  wf = wavenumber.compute(n,verbose=[True,False])
+#            n: if not units given (with astropy.units) assuming 1/cm
+#            wf = [wavelength (micron), frequency (Hz)]
+#
+########################################
+#
+# @Guiguesp - 2025-09-25 (Kona Day!)
+#             2025-09-26 small corrections
+# Worried to never know what n=900 cm-1 is !!
+#
+########################################################################
+
+def compute(n, verbose=True):
+
+    if not isinstance(n, u.Quantity):
+        n=n/u.cm
+        if verbose:
+            print("\n Assuming wavenumber is in 1/cm\n")
+
+    wavelength = (1/n).to(u.micron)
+    frequency = (c.c * n).to(u.Hz)
+
+    if verbose:
+        print("\n Wavelength = {0:5.2f} , Frequency = {1:5.2e} \n".format(wavelength,frequency))
+
+    return [wavelength,frequency]
+

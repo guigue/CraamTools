@@ -1,0 +1,25 @@
+import numpy as np
+
+def pnt_refract(ele):
+    
+
+    tk  = 275.15
+    pmb = 0
+    rh  = 0
+    ztop = np.radians(90 - ele)
+  
+  if ( pmb < PMIN ) return (( float) 0 ) ;
+   
+  z = ztop < ZMAX ? ztop : ZMAX;
+  ps = pow ( 10.0,( ( 0.03477 * tk - 8.71170 ) /
+		    ( 0.00412 * tk - 0.12540 ) ) * ( 1.0 + pmb * 4.5e-6 ) );
+  pw = rh * ps / ( 1.0 - ( 1.0 - rh ) * ps / pmb );
+  b = 4.4474e-6 * tk * ( 1.0 - 0.0074 * pw );
+  s = sin ( z );
+  c = cos ( z );
+  return (float) ( ( 77.6890e-6 * pmb - ( 6.3938e-6 - 0.375463 / tk ) * pw )
+		   / tk ) * ( 1.0 - b ) * s
+    / sqrt ( c * c + 0.001908 + 0.6996 * b - 0.00003117 * s / c ) / RAD ;
+}
+
+/* 

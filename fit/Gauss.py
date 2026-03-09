@@ -220,7 +220,7 @@ def fit2d(z, x=None, y=None, a=None, negative=False, tilt=False):
     ny = s[0]
     n  = nx*ny
 
-    if x:
+    if x is not None:
         if nx != len(x):
             print('\n  ')
             print('x array must have size equal to number of columns of z\n')
@@ -228,7 +228,7 @@ def fit2d(z, x=None, y=None, a=None, negative=False, tilt=False):
     else:
         x=np.linspace(0,nx-1,nx)
 
-    if y:
+    if y is not None:
         if ny != len(y):
             print('\n  ')
             print ('\n y array must have size equal to number of rows of z')
@@ -248,7 +248,7 @@ def fit2d(z, x=None, y=None, a=None, negative=False, tilt=False):
     x0 = int(x[ix])
     y0 = int(y[iy])
 
-    if not a:
+    if a is None:
         parx,yfitx,covx = fit1d(x,z[y0,:],nt=4)
         pary,yfity,covy = fit1d(y,z[:,x0],nt=4)
 

@@ -1,0 +1,18 @@
+import numpy as np
+from astropy import units as u
+
+def omega(phi):
+
+    # From Astrophysical Quantities
+    #  14.9 Solar Rotation
+
+    A = (14.522+14.39)/2   # Mean btwn 'Individual sunspots' and 'sunspots groups'
+    B = (-2.84-29.95)/2    # idem
+
+    omega = A + B * np.sin(phi.to(u.radian))**2
+
+    print('\n\n Omega = {0:f} deg/day for latitude = {1:f} deg'.format(omega.value,phi.to(u.degree).value))
+
+    return omega
+
+
